@@ -3,8 +3,6 @@ import Landing from "./Landing";
 import ServiceDetails from './components/ServiceDetails';
 import { AnimatePresence, motion } from 'framer-motion';
 import PageWrapper from './components/PageWrapper';
-
-
 function AnimatedRoutes() {
   const location = useLocation();
 
