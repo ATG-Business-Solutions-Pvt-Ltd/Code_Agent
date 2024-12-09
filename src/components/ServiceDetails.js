@@ -8,8 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import confetti from "canvas-confetti";
 function ServiceDetails({ serviceId }) {
   // const baseURL = "localhost:8000";
-  // const baseURL = "http://3.109.212.159";
-  const baseURL = "http://0.0.0.0";
+  const baseURL = "http://3.109.212.159";
+  // const baseURL = "http://0.0.0.0";
 
   const startConfetti = () => {
     confetti({
