@@ -7,7 +7,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import confetti from "canvas-confetti";
 function ServiceDetails({ serviceId }) {
-  const baseURL = "http://127.0.0.1";
+  // const baseURL = "http://127.0.0.1";
+  const baseURL = "http://3.109.212.159";
 
   const startConfetti = () => {
     confetti({
@@ -23,6 +24,7 @@ function ServiceDetails({ serviceId }) {
   const [result, setResult] = useState(null);
   const [input1, setInput1] = useState("");
   const [input2, setInput2] = useState("");
+
 
   const [responseReceived, setResponseReceived] = useState(false);
   const { id } = useParams();
@@ -53,15 +55,10 @@ function ServiceDetails({ serviceId }) {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    const fileExtension = file.name.split(".").pop().toLowerCase(); // Get the file extension
-    console.log(fileExtension);
+    const fileExtension = file.name.split('.').pop().toLowerCase(); // Get the file extension
+    console.log(fileExtension); 
     console.log(file.type);
-    if (
-      file &&
-      (fileExtension === "zip" ||
-        file.type === "application/zip" ||
-        file.type === "application/x-zip-compressed")
-    ) {
+    if (file && (fileExtension === 'zip' || file.type === "application/zip" || file.type === "application/x-zip-compressed")){
       setZipFile(file);
     } else {
       alert("Please select a zip file");
@@ -126,6 +123,7 @@ function ServiceDetails({ serviceId }) {
 
       setResult({ __html: response.data.explanation.replace(/\n/g, "<br>") });
       setTimeout(() => {
+       
         setResponseReceived(true); // Set response received
       }, 1000); // Simulate delay
       const handleCopy = () => {
@@ -324,22 +322,7 @@ function ServiceDetails({ serviceId }) {
                   opacity: responseReceived ? 1 : 0.2,
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-copy"
-                >
-                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                </svg>{" "}
-                Copy code
+               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy code
               </span>
 
               <div id="result" className="" dangerouslySetInnerHTML={result} />
