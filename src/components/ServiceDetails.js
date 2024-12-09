@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import confetti from "canvas-confetti";
 function ServiceDetails({ serviceId }) {
   // const baseURL = "http://127.0.0.1";
-   const baseURL = "http://3.109.212.159";
+  const baseURL = "http://3.109.212.159";
 
   const startConfetti = () => {
     confetti({
@@ -121,7 +121,13 @@ function ServiceDetails({ serviceId }) {
         code: perlCode,
       });
 
-      setResult({ __html: response.data.explanation.replace(/\n/g, "<br>") });
+      const dynamicKey = Object.keys(response.data).find(
+        (key) => response.data[key] && typeof response.data[key] === "string"
+      );
+
+      // setResult({ __html: response.data.explanation.replace(/\n/g, "<br>") });
+      setResult({ __html: response.data[dynamicKey].replace(/\n/g, "<br>") });
+
       setTimeout(() => {
        
         setResponseReceived(true); // Set response received
