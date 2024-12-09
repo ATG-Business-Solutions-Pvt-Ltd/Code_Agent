@@ -26,7 +26,13 @@ function ServiceDetails() {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file && file.type === 'application/zip') {
+
+    const fileExtension = file.name.split('.').pop().toLowerCase(); 
+    console.log(fileExtension);
+    console.log(file.type);
+    if (file && (fileExtension === 'zip' || file.type === "application/zip" || file.type === "application/x-zip-compressed")){
+
+    // if (file && file.type === 'application/zip') {
       setZipFile(file);
     } else {
       alert('Please select a zip file');
