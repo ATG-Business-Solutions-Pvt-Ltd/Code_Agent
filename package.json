@@ -1,3 +1,4 @@
+root@ip-172-31-14-84:/home/ubuntu/code_agent_ui/Code_Agent# cat package.json
 {
   "name": "codecrafters_v1",
   "version": "0.1.0",
@@ -9,6 +10,7 @@
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "canvas-confetti": "^1.9.3",
+    "cors": "^2.8.5",
     "framer-motion": "^11.13.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -23,6 +25,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+"proxy":http://localhost:8001,
   "eslintConfig": {
     "extends": [
       "react-app",
