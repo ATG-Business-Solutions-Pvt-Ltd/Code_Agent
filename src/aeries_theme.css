@@ -377,7 +377,7 @@
         text-align: center;
         padding: 10px;
         border-radius: 8px;
-        font-size: 20px;
+        font-size: 18px;
       }
       .application a:hover,.application button:hover{
         background-color: #2daaa4;
@@ -586,7 +586,10 @@
       height: 300px;
       overflow-y: scroll;
       background-color: var(--textlight);
-      padding: 25px;
+      /* padding: 25px; */
+    }
+    .language-perl{
+      margin: 0!important;
     }
     .container{
       max-width: 100%;
@@ -1007,3 +1010,48 @@ background-color: var(--primary-color)!important;
   color: var(--textlight)!important;
 }
 
+
+
+
+/* Customize function names */
+.token.function {
+  color: #ff9800; /* Orange */
+}
+
+/* Customize keywords like 'sub', 'my', 'use' */
+.token.keyword {
+  color: #ff4081; /* Pink */
+  font-weight: bold;
+}
+
+/* Customize strings */
+.token.string {
+  color: #4caf50; /* Green */
+}
+
+/* Customize numbers */
+.token.number {
+  color: #03a9f4; /* Blue */
+}
+button, input, optgroup, select, textarea{
+  font-family: inherit!important;
+}
+
+input:focus,textarea:focus,:not(pre) > code[class*="language-"], pre[class*="language-"]{
+  background-color: #fff!important;
+  color: var(--text-dark)!important;
+}
+.button-container-flex{
+  display: flex;
+  justify-content:center;
+}
+.button-container-flex button{
+  width: 200px;
+}
+.button-container-flex button:first-child{
+  margin: 0 15px 0 0!important;
+}
+.button-container-flex button.btn-secondary{
+  background-color: #a1a1a1!important;
+  border: #a1a1a1!important;
+}
