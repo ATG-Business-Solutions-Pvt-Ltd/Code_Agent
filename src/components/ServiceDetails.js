@@ -11,8 +11,23 @@ import "prismjs/themes/prism.css"; // You can choose a different theme
 import "prismjs/components/prism-perl"; // Import Perl syntax highlighting
 
 function ServiceDetails({ serviceId }) {
-
+  const getLoadingMessage = () => {
+    console.log("Service Name Passed:", service.name); // Debugging log
   
+    switch (service.name.toLowerCase()) {
+      case "explanation":
+        return `Fetching ${service.name} details, please wait...`;
+      case "review":
+        return `Reviewing ${service.name} code, please hold on...`;
+      case "conversion":
+        return `Converting ${service.name} code, this may take a moment...`;
+      default:
+        return `Processing ${service.name} request, please wait...`;
+    }
+  };
+  
+  // Example usage
+ 
   // const baseURL = "http://10.201.150.168";
   const baseURL = "http://127.0.0.1"; 
 
@@ -23,7 +38,7 @@ function ServiceDetails({ serviceId }) {
       origin: { y: 0.6 },
     });
   };
-
+  const [isLoading, setIsLoading] = useState(false);
   const [zipFile, setZipFile] = useState(null);
   const [services] = useState(data);
   const [perlCode, setPerlCode] = useState("");
@@ -94,7 +109,7 @@ function ServiceDetails({ serviceId }) {
 
     const formData = new FormData();
     formData.append("file", zipFile);
-    const loadingToastId = toast.loading("Uploading file, this may take a moment...");
+    const loadingToastId = toast.loading(getLoadingMessage("conversion"));
 
     try {
       const response = await axios.post(
@@ -135,7 +150,9 @@ function ServiceDetails({ serviceId }) {
   };
 
   const handleSubmit1 = async () => {
-    const loadingToastIdExplain = toast.loading("Fetching code explanation, please wait...");
+    if (isLoading) return; // Prevent multiple calls
+    console.log("handleSubmit1 triggered");
+    const loadingToastIdExplain = toast.loading(getLoadingMessage("explanation"));
 
     try {
       const response = await axios.post(`${baseURL}${service.textApi}`, {
@@ -209,7 +226,7 @@ function ServiceDetails({ serviceId }) {
 
   const handleSubmit2 = async (event) => {
     event.preventDefault();
-    const loadingToastIdRepo = toast.loading("Processing your request, hang tight...");
+    const loadingToastIdRepo = toast.loading(getLoadingMessage("review"));
 
     try {
       await axios.post(
@@ -375,7 +392,10 @@ function ServiceDetails({ serviceId }) {
               <div class="button-container button-container-flex">
                 <button
                   id="button-conf"
-                  onClick={handleSubmit1}
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent unintended form submission
+                    handleSubmit1();
+                  }}
                   className="btn btn-primary"
                 >
                   <i id="icon" class="fa-solid fa-play"></i>
