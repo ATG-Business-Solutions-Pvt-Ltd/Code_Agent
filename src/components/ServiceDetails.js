@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import data from "../data";
@@ -6,10 +6,30 @@ import Navbar from "./Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import confetti from "canvas-confetti";
+import Prism from "prismjs";
+import "prismjs/themes/prism.css"; // You can choose a different theme
+import "prismjs/components/prism-perl"; // Import Perl syntax highlighting
+
 function ServiceDetails({ serviceId }) {
+  const getLoadingMessage = () => {
+    console.log("Service Name Passed:", service.name); // Debugging log
+  
+    switch (service.name.toLowerCase()) {
+      case "explanation":
+        return `Fetching ${service.name} details, please wait...`;
+      case "review":
+        return `Reviewing ${service.name} code, please hold on...`;
+      case "conversion":
+        return `Converting ${service.name} code, this may take a moment...`;
+      default:
+        return `Processing ${service.name} request, please wait...`;
+    }
+  };
+  
+  // Example usage
+ 
   const baseURL = "http://10.201.150.168";
   // const baseURL = "http://127.0.0.1"; 
-  // const baseURL = "http://3.109.212.159"; 
 
   const startConfetti = () => {
     confetti({
@@ -18,7 +38,7 @@ function ServiceDetails({ serviceId }) {
       origin: { y: 0.6 },
     });
   };
-
+  const [isLoading, setIsLoading] = useState(false);
   const [zipFile, setZipFile] = useState(null);
   const [services] = useState(data);
   const [perlCode, setPerlCode] = useState("");
@@ -30,6 +50,21 @@ function ServiceDetails({ serviceId }) {
   const [responseReceived, setResponseReceived] = useState(false);
   const { id } = useParams();
   const service = services.find((s) => s.id === parseInt(serviceId));
+  useEffect(() => {
+    if (service) {
+      handleClear();
+    }
+  }, [service?.name]);
+
+  const handleClear = () => {
+    setZipFile(null);
+    setPerlCode("");
+    setResult(null);
+    setInput1("");
+    setInput2("");
+    setResponseReceived(false);
+    // toast.info("All inputs cleared!");
+  };
 
   const handleCopy = () => {
     const resultDiv = document.getElementById("result");
@@ -74,7 +109,7 @@ function ServiceDetails({ serviceId }) {
 
     const formData = new FormData();
     formData.append("file", zipFile);
-    const loadingToastId = toast.loading("Uploading file...");
+    const loadingToastId = toast.loading(getLoadingMessage("conversion"));
 
     try {
       const response = await axios.post(
@@ -115,7 +150,9 @@ function ServiceDetails({ serviceId }) {
   };
 
   const handleSubmit1 = async () => {
-    const loadingToastIdExplain = toast.loading("Fetching explanation...");
+    if (isLoading) return; // Prevent multiple calls
+    console.log("handleSubmit1 triggered");
+    const loadingToastIdExplain = toast.loading(getLoadingMessage("explanation"));
 
     try {
       const response = await axios.post(`${baseURL}${service.textApi}`, {
@@ -125,14 +162,24 @@ function ServiceDetails({ serviceId }) {
       const dynamicKey = Object.keys(response.data).find(
         (key) => response.data[key] && typeof response.data[key] === "string"
       );
+      if (dynamicKey) {
+        const formattedResponse = response.data[dynamicKey];
+  
+        setResult(formattedResponse); // Store plain text instead of HTML
+      }
+  
+      Prism.highlightAll();
 
       // setResult({ __html: response.data.explanation.replace(/\n/g, "<br>") });
-      setResult({ __html: response.data[dynamicKey].replace(/\n/g, "<br>") });
+      // setResult({ __html: response.data[dynamicKey].replace(/\n/g, "<br>") });
 
       setTimeout(() => {
        
         setResponseReceived(true); // Set response received
       }, 1000); // Simulate delay
+
+      // In your component
+
       const handleCopy = () => {
         // Select the content of the #result div
         const resultDiv = document.getElementById("result");
@@ -179,7 +226,7 @@ function ServiceDetails({ serviceId }) {
 
   const handleSubmit2 = async (event) => {
     event.preventDefault();
-    const loadingToastIdRepo = toast.loading("Processing request...");
+    const loadingToastIdRepo = toast.loading(getLoadingMessage("review"));
 
     try {
       await axios.post(
@@ -257,13 +304,14 @@ function ServiceDetails({ serviceId }) {
               >
                 Execute
               </button> */}
-              <div class="button-container">
+              <div class="button-container button-container-flex">
                 <button id="button-conf" className="btn btn-primary">
                   <i id="icon" class="fa-solid fa-play"></i>
                   <span id="text" class="text">
                     Execute
                   </span>
                 </button>
+                <button className="btn btn-secondary" onClick={handleClear}>Clear All</button>
               </div>
             </div>
           </form>
@@ -291,7 +339,7 @@ function ServiceDetails({ serviceId }) {
               >
                 Execute
               </button> */}
-              <div class="button-container">
+              <div class="button-container button-container-flex">
                 <button
                   id="button-conf"
                   onClick={handleSubmit}
@@ -302,6 +350,7 @@ function ServiceDetails({ serviceId }) {
                     Execute
                   </span>
                 </button>
+                <button className="btn btn-secondary" onClick={handleClear}>Clear All</button>
               </div>
             </div>
           </div>
@@ -332,13 +381,21 @@ function ServiceDetails({ serviceId }) {
                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy code
               </span>
 
-              <div id="result" className="" dangerouslySetInnerHTML={result} />
+              {/* <div id="result" className="" dangerouslySetInnerHTML={result} /> */}
+              <div id="result">
+              <pre>
+  <code className="language-perl">{result}</code>
+</pre>
+</div>
             </div>
             <div cl4ssName="col-md-3 offset-4">
-              <div class="button-container">
+              <div class="button-container button-container-flex">
                 <button
                   id="button-conf"
-                  onClick={handleSubmit1}
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent unintended form submission
+                    handleSubmit1();
+                  }}
                   className="btn btn-primary"
                 >
                   <i id="icon" class="fa-solid fa-play"></i>
@@ -346,6 +403,7 @@ function ServiceDetails({ serviceId }) {
                     Execute
                   </span>
                 </button>
+                <button className="btn btn-secondary" onClick={handleClear}>Clear All</button>
               </div>
               {/* <button
   type="button"

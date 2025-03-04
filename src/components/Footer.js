@@ -3,7 +3,7 @@ import React from 'react'
 const Footer = () => {
   return (
     <section className="footer">
-     @2024 All Rights Reserved. 
+     @2025 All Rights Reserved. 
 
         {/* Made with <span className='love_icon heart'>
         <div className="heart">
